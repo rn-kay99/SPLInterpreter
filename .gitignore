@@ -1,0 +1,3 @@
+.DS_Store
+/java_generated/*.class
+/python_generated/__pycache__
