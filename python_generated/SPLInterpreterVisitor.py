@@ -20,31 +20,27 @@ class SPLInterpreterVisitor(SPLVisitor):
             if ctx.getChildCount() == 7:
                 self.visit(ctx.statement(1))
         else:
-            raise SyntaxError("Error: if statement expects a boolean value")
-        
-        #return self.visitChildren(ctx)
+            raise SyntaxError("Error: if statement expects a boolean value.")
     
     # Visit a parse tree produced by SPLParser#printStmt.
     def visitPrintStmt(self, ctx:SPLParser.PrintStmtContext):
         expression = self.visit(ctx.expression())
         print(expression)
-        #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by SPLParser#whileStmt.
     def visitWhileStmt(self, ctx:SPLParser.WhileStmtContext):
         expression = self.visit(ctx.expression())
 
         if not isinstance(expression, bool):
-            raise SyntaxError("Error: while statement expects a boolean value")
+            raise SyntaxError("Error: while statement expects a boolean value.")
         
         while self.visit(ctx.expression()):
             self.visit(ctx.statement())
-            
-        #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by SPLParser#varDecl.
     def visitVarDecl(self, ctx:SPLParser.VarDeclContext):
         varName = ctx.IDENTIFIER().getText()
+        
         # if varValue is not set, then set it to None
         varValue = None
 
@@ -53,7 +49,6 @@ class SPLInterpreterVisitor(SPLVisitor):
             varValue = self.visit(ctx.expression())
 
         self.variables[varName] = varValue
-        print(self.variables)
         return self.visitChildren(ctx)
     
     # Visit a parse tree produced by SPLParser#assignment.
@@ -64,7 +59,6 @@ class SPLInterpreterVisitor(SPLVisitor):
             varName = ctx.IDENTIFIER().getText()
             varValue = self.visit(ctx.getChild(2))
             self.variables[varName] = varValue
-            print(self.variables)
             
         return self.visitChildren(ctx)
     
@@ -73,11 +67,12 @@ class SPLInterpreterVisitor(SPLVisitor):
         i = 0
         value = self.visit(ctx.logic_and(0))
 
+        # if there is no 'or'
         if ctx.getChildCount() == 1:
             return value
         
         if not isinstance(value, bool):
-            raise SyntaxError("ERROR: OR condition expects a bool.")
+            raise SyntaxError("ERROR: 'or' condition expects a bool.")
         
         if value == True:
             return True
@@ -87,10 +82,10 @@ class SPLInterpreterVisitor(SPLVisitor):
             value = self.visit(ctx.getChild(i + 2))
 
             if orOperator != "or":
-                raise SyntaxError("ERROR: or operator expected.")
+                raise SyntaxError("ERROR: 'or' operator expected.")
 
             if not isinstance(value, bool):
-                raise SyntaxError("ERROR: Or condition expects a bool.")
+                raise SyntaxError("ERROR: 'or' condition expects a bool.")
 
             if value == True:
                 return True
@@ -104,11 +99,12 @@ class SPLInterpreterVisitor(SPLVisitor):
         i = 0
         value = self.visit(ctx.equality(0))
         
+        # if there is no 'and'
         if ctx.getChildCount() == 1:
             return value
         
         if not isinstance(value, bool):
-            raise SyntaxError("ERROR: AND condition expects a bool.")
+            raise SyntaxError("ERROR: 'and' condition expects a bool.")
         
         if value == False:
             return False
@@ -118,10 +114,10 @@ class SPLInterpreterVisitor(SPLVisitor):
             value = self.visit(ctx.getChild(i + 2))
 
             if andOperator != "and":
-                raise SyntaxError("ERROR: and operator expected.")
+                raise SyntaxError("ERROR: 'and' operator expected.")
 
             if not isinstance(value, bool):
-                raise SyntaxError("ERROR: AND condition expects a bool.")
+                raise SyntaxError("ERROR: 'and' condition expects a bool.")
             
             if value == False:
                 return False
@@ -136,6 +132,7 @@ class SPLInterpreterVisitor(SPLVisitor):
         equality = self.visit(ctx.comparison(0))
         result = True
 
+        # if there is no '==' or '!='
         if ctx.getChildCount() == 1:
             return equality
 
@@ -147,7 +144,7 @@ class SPLInterpreterVisitor(SPLVisitor):
             if ( not (isinstance(term1, float) and isinstance(term2, float)) and 
                  not (isinstance(term1, str) and isinstance(term2, str)) and 
                  not (isinstance(term1, bool) and isinstance(term2, bool))):
-                raise SyntaxError("ERROR: COMPARE Operator is only allowed for same datatypes")
+                raise SyntaxError("ERROR: Compare operator is only allowed for same datatypes.")
 
             if operator == "==":
                 if not term1 == term2:
@@ -165,6 +162,7 @@ class SPLInterpreterVisitor(SPLVisitor):
         term = self.visit(ctx.getChild(i))
         result = True
         
+        # if there is no '>', '>=', '<' or '<='
         if ctx.getChildCount() == 1 or not isinstance(term, float):
             return term
 
@@ -174,7 +172,7 @@ class SPLInterpreterVisitor(SPLVisitor):
             term2 = self.visit(ctx.getChild(i + 2))
 
             if not isinstance(term2, float):
-                raise SyntaxError("Error: Only numbers in comparison allowed")
+                raise SyntaxError("Error: Only numbers in comparison allowed.")
             
             if operator == ">":
                 if not term1 > term2:
@@ -202,7 +200,6 @@ class SPLInterpreterVisitor(SPLVisitor):
         if ctx.getChild(i).start.type == SPLParser.IDENTIFIER:
             varName = ctx.getChild(i).getText()
             result = self.variables[varName]
-            #print(self.variables)
             if result == None:
                 raise SyntaxError("ERROR: cannot use variable before declaration.")
 
@@ -228,8 +225,6 @@ class SPLInterpreterVisitor(SPLVisitor):
         
         return result
 
-        #return self.visitChildren(ctx)
-
     # Visit a parse tree produced by SPLParser#factor.
     def visitFactor(self, ctx:SPLParser.FactorContext):
         i = 0
@@ -246,7 +241,7 @@ class SPLInterpreterVisitor(SPLVisitor):
 
                 # check if factor is a number
                 if not isinstance(factor, float):
-                    raise SyntaxError("ERROR: Operators * and / only for numbers allowed")
+                    raise SyntaxError("ERROR: Operators * and / only for numbers allowed.")
             
             if operator == "*":
                 result *= factor
@@ -256,7 +251,6 @@ class SPLInterpreterVisitor(SPLVisitor):
             i = i + 2
 
         return result
-        #return self.visitChildren(ctx)
 
     # Visit a parse tree produced by SPLParser#unary.
     def visitUnary(self, ctx:SPLParser.UnaryContext):
@@ -270,8 +264,9 @@ class SPLInterpreterVisitor(SPLVisitor):
                     number = self.variables[number]
 
                 if not isinstance(number, float):
-                    raise SyntaxError("ERROR: - operator only for numbers allowed")
+                    raise SyntaxError("ERROR: '-' operator only for numbers allowed.")
                 return -number
+            
             if ctx.getChild(0).getText() == "!":
                 # NOT operator only for bool values allowed
                 value = self.visit(ctx.getChild(1))
@@ -281,7 +276,7 @@ class SPLInterpreterVisitor(SPLVisitor):
                     value = self.variables[value]
 
                 if not isinstance(value, bool):
-                    raise SyntaxError("ERROR: NOT operator only for bool values allowed")
+                    raise SyntaxError("ERROR: '!' operator only for bool values allowed.")
                 return not value
 
         return self.visitChildren(ctx)

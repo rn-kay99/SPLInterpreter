@@ -7,7 +7,7 @@ from python_generated.SPLInterpreterVisitor import SPLInterpreterVisitor
 
 def main(argv):
     if len(argv) <= 1:
-        print("ERROR: Bitte gebe eine Eingabe an, die geparst werden soll.")
+        print("ERROR: Please enter an input to be parsed.")
         return
     
     # Input wird als Kommandozeilenargument angegeben
@@ -21,15 +21,10 @@ def main(argv):
     stream = CommonTokenStream(lexer)
     parser = SPLParser(stream)
     tree = parser.program()
-    print("Parse tree: ", tree)
-
-    # output = open("output.txt","w")
 
     walker = ParseTreeWalker()
     visitor = SPLInterpreterVisitor()
     visitor.visit(tree)
-
-    # output.close()
 
 
 if __name__ == "__main__":
