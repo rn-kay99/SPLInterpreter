@@ -288,7 +288,7 @@ class SPLInterpreterVisitor(SPLVisitor):
         if ctx.start.type == SPLParser.NUMBER:
             return float(ctx.getText())
         elif ctx.start.type == SPLParser.STRING:
-            return str(ctx.getText())
+            return str(ctx.getText()).replace('"','')
         elif ctx.start.type == SPLParser.IDENTIFIER:
             return str(ctx.getText())
         elif ctx.start.type == SPLParser.TRUE:
