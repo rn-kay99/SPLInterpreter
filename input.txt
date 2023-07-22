@@ -1,6 +1,9 @@
-var welcomeText = "hello";
+var welcome1 = "This is a SPL' interpreter.";
+var welcome2 = "Look at the README.md for more information.";
 var x = 10;
 
 if(x > 5){
-    print welcomeText;
+    print "Hello!";
+    print welcome1;
+    print welcome2;
 }
