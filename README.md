@@ -7,6 +7,27 @@ Der Code für den Interpreter lässt sich in der ```./python_generated/SPLInterp
 
 Im Verzeichnis ```./spl_programs``` finden sich Beispielprogramme für den Interpreter in der Sprache SPL'.
 
+### Setup
+Vorraussetzungen:
+* Java Version >= 1.7
+* Antlr Download von der Webseite
+
+Verschiebe die Datei (z.B. /usr/local/bin):
+```shell
+mv antlr-4.13.0-complete.jar /usr/local/bin/
+```
+
+Füge Antlr zum Classpath hinzu in der Konfigurationsdatei der Shell (z.B. ~/.zshrc):
+```shell
+export CLASSPATH=".:/usr/local/bin/antlr-4.13.0-complete.jar:$CLASSPATH"
+```
+
+Füge Aliase in der Konfigurationsdatei der Shell hinzu (z.B. ~/.zshrc):
+```shell
+alias antlr4='java -Xmx500M -cp "/usr/local/bin/antlr-4.13.0-complete.jar:$CLASSPATH" org.antlr.v4.Tool'
+alias grun='java -Xmx500M -cp "/usr/local/bin/antlr-4.13.0-complete.jar:$CLASSPATH" org.antlr.v4.gui.TestRig'
+```
+
 ### Testen des Interpreters
 Um den Interpreter zu testen muss in dem Hauptverzeichnis der folgende Befehl ausgeführt werden:
 ```shell
